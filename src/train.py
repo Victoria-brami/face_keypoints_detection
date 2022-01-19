@@ -9,7 +9,7 @@ from torch.utils.tensorboard import SummaryWriter
 
 
 
-def train_on_epochs(model, datasets, optimizer, parameters, writer):
+def train_on_epochs(model, loss, datasets, optimizer, parameters, writer):
 
     # prepare loaders
     train_dataset = datasets["train"]
@@ -22,8 +22,8 @@ def train_on_epochs(model, datasets, optimizer, parameters, writer):
     logpath = os.path.join(parameters["folder"], "training.log")
     with open(logpath, "w") as logfile:
         for epoch in range(1, parameters["n_epochs"]+1):
-            dict_loss = train(model, optimizer, train_loader, parameters["train_device"])
-            val_loss = test(model, optimizer, test_loader, parameters["test_device"])
+            dict_loss = train(model, loss, optimizer, train_loader, parameters["train_device"])
+            val_loss = test(model, loss, optimizer, test_loader, parameters["test_device"])
 
             writer.add_scalars('Loss', {'Train': dict_loss["MSE"], 'Val': val_loss["MSE"]})
             print(f"Epoch {epoch}:  Train loss: {dict_loss} and Val loss: {val_loss}")
@@ -43,7 +43,7 @@ def main():
     parameters = parser()
 
     # logging tensorboard
-    writer = SummaryWriter(log_dir=parameters["folder"])
+    writer = SummaryWriter(log_dir=parameters["writer_folder"])
 
     # Define the model
     model = get_model(parameters)
@@ -65,8 +65,11 @@ def main():
     # define the optimizer
     optimizer = get_optimizer(model, parameters)
 
+    # Define the loss
+    loss = torch.nn.MSELoss(reduction='mean')
+
     # Training loop
-    train_on_epochs(model, datasets, optimizer, parameters, writer)
+    train_on_epochs(model, loss, datasets, optimizer, parameters, writer)
 
     writer.close()
 

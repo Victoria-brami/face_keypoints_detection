@@ -47,6 +47,7 @@ class FaceDataset(Dataset):
 
         if self.transform:
             sample = self.transform(sample)
+            sample['image'] = sample['image'].repeat(3, 1, 1) # COnvert to 3 channels images for ResNet input
         return sample
 
     def show_keypoints(self, sample):

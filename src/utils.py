@@ -1,11 +1,16 @@
 import torch
 import torch.optim as optim
+from src.model import FaceResNet18, FaceResNet50
 from torchvision import transforms
 
 
 def get_model(parameters):
-    model = None
-    if parameters["init_from_checkpoint"] is not None:
+    if parameters["modelname"] == 'resnet18':
+        model = FaceResNet18()
+    else:
+        model = FaceResNet50()
+
+    if parameters["init_from_checkpoint"] != ' ':
         chkpt = torch.load(parameters["init_from_checkpoint"], map=parameters["device"])
         model.load_state_dict(chkpt)
     return model
@@ -24,9 +29,9 @@ def get_optimizer(model, parameters):
 
 def get_augmentation(mode, parameters):
     trsfm_list = []
-
     if mode == 'train':
         if "flip" in parameters["aug"]:
-            trsfm_list.append(RandomHorizontalFlip())
+            trsfm_list.append(transforms.RandomHorizontalFlip())
+    trsfm_list.append(transforms.Resize(224))
     trsfm_list.append(transforms.ToTensor())
     return transforms.Compose(trsfm_list)

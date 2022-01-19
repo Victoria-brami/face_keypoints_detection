@@ -2,7 +2,7 @@ import torch
 from tqdm import tqdm
 from src.loss import compute_loss
 
-def train_or_test(model, optimizer, iterator, device, mode):
+def train_or_test(model, loss, optimizer, iterator, device, mode):
     assert mode in ['train', 'test']
     if mode == "train":
         model.train()
@@ -25,23 +25,23 @@ def train_or_test(model, optimizer, iterator, device, mode):
 
             # Compute the model's output
             image, label = batch['image'], batch['label']
-            ouptut = model(batch['image'])
+            ouptut = model(image)
 
-            loss = compute_loss()
-            loss_dict['MSE'] += loss
+            loss_value = loss(ouptut, label)
+            loss_dict['MSE'] += loss_value
 
             if mode == "train":
                 # backward pass
-                loss.backward()
+                loss_value.backward()
                 # update the weights
                 optimizer.step()
 
     return loss_dict
 
 
-def train(model, optimizer, iterator, device):
-    return train_or_test(model, optimizer, iterator, device, mode="train")
+def train(model, loss, optimizer, iterator, device):
+    return train_or_test(model, loss, optimizer, iterator, device, mode="train")
 
-def test(model, optimizer, iterator, device):
-    return train_or_test(model, optimizer, iterator, device, mode="test")
+def test(model, loss, optimizer, iterator, device):
+    return train_or_test(model, loss, optimizer, iterator, device, mode="test")
 
