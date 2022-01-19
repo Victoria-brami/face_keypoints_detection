@@ -21,7 +21,7 @@ class FaceDataset(Dataset):
     def split_dataset(self):
         nb_items = self.data_df.shape[0]
         if self.mode == 'train' or self.mode =='eval':
-            nb_items = int(0.92 * self.data_df.shape[0])
+            nb_items = int(0.9 * self.data_df.shape[0])
             self.data = self.data_df.head(nb_items)
             if self.mode =='train':
                 nb_items = int(0.9 * nb_items)
@@ -39,7 +39,7 @@ class FaceDataset(Dataset):
 
     def __getitem__(self, item):
         target_cols = list(self.data.drop('Image', axis=1).columns)
-        raw_image = np.array(self.data['Image'][item].str.split().tolist(), dtype='float')
+        raw_image = np.array(self.data['Image'].values[item].split(), dtype='float')
         image = raw_image.reshape(-1, self.h, self.w, self.c)
         label = self.data[target_cols].values[item]
 

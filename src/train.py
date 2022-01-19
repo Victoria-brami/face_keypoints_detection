@@ -19,7 +19,7 @@ def train_on_epochs(model, loss, datasets, optimizer, parameters, writer):
     test_loader = DataLoader(test_dataset, batch_size=parameters["batch_size"],
                               shuffle=True, num_workers=2)
 
-    logpath = os.path.join(parameters["folder"], "training.log")
+    logpath = os.path.join(parameters["checkpoint_dir"], "training.log")
     with open(logpath, "w") as logfile:
         for epoch in range(1, parameters["n_epochs"]+1):
             dict_loss = train(model, loss, optimizer, train_loader, parameters["train_device"])
