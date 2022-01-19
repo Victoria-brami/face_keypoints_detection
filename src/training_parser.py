@@ -8,7 +8,7 @@ def parser():
     parser.add_argument('--modelname', default='resnet18', choices=['resnet18', 'resnet50'])
     parser.add_argument('--wd', default=1e-5, help='Weight Decay')
     parser.add_argument('--batch_size', default=16)
-    parser.add_argument('--aug', nargs='+', default=["flip"])
+    parser.add_argument('--aug', nargs='+', default=[" "], choices=[["flip"]])
     parser.add_argument('--n_epochs', default=30)
     parser.add_argument('--checkpoint_dir', default='../checkpoints')
     parser.add_argument('--init_from_checkpoint', default=' ')
