@@ -11,7 +11,7 @@ class Resize(object):
     def __call__(self, sample):
         image, label = sample['image'], sample['label']
         input_size = image.shape[0]
-        img = transform.resize(image, (self.output_size, self.output_size))
+        image = transform.resize(image, (self.output_size, self.output_size, 1))
         label *= self.output_size / input_size
 
         sample = {'image': image, 'label': label}
@@ -57,7 +57,7 @@ def get_augmentation(mode, parameters):
     trsfm_list = []
     if mode == 'train':
         if "flip" in parameters["aug"]:
-            trsfm_list.append(RandomHorizontalFlip())
+            trsfm_list.append(transforms.RandomHorizontalFlip())
     trsfm_list.append(Resize(224))
     trsfm_list.append(ToTensor())
     return transforms.Compose(trsfm_list)
